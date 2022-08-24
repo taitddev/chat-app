@@ -6,6 +6,10 @@ import io from "socket.io-client";
 
 import "./Chat.css";
 
+import InfoBar from "../InfoBar/InfoBar";
+import Messages from "../Messages/Messages";
+import Input from "../Input/Input";
+
 let socket;
 
 const Chat = () => {
@@ -16,12 +20,11 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
 
   const { search } = useLocation();
+
   useEffect(() => {
-    console.log("test");
     const { name, room } = queryString.parse(search);
 
     socket = io(import.meta.env.VITE_SERVER_ENDPOINT);
-    console.log("🚀 ~ file: Chat.jsx ~ line 23 ~ useEffect ~ socket", socket);
 
     setName(name);
     setRoom(room);
@@ -33,9 +36,35 @@ const Chat = () => {
     });
   }, [search]);
 
+  useEffect(() => {
+    socket.on("message", (message) => {
+      setMessages((messages) => [...messages, message]);
+    });
+
+    socket.on("roomData", ({ users }) => {
+      setUsers(users);
+    });
+  }, []);
+
+  const sendMessage = (event) => {
+    event.preventDefault();
+
+    if (message) {
+      socket.emit("sendMessage", message, () => setMessage(""));
+    }
+  };
+
   return (
     <div className="outerContainer">
-      <div className="container"></div>
+      <div className="container">
+        <InfoBar room={room} />
+        <Messages messages={messages} name={name} />
+        <Input
+          message={message}
+          setMessage={setMessage}
+          sendMessage={sendMessage}
+        />
+      </div>
     </div>
   );
 };
