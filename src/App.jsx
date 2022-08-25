@@ -1,14 +1,22 @@
 import { Routes, Route } from "react-router-dom";
 
-import Chat from "./components/Chat/Chat";
-import Join from "./components/Join/Join";
+import { AuthContextProvider } from "./context/AuthContext";
+
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import Chat from "./pages/Chat";
+import SetAvatar from "./pages/SetAvatar";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Join />}></Route>
-      <Route path="/chat" element={<Chat />}></Route>
-    </Routes>
+    <AuthContextProvider>
+      <Routes>
+        <Route path="/register" element={<Register />}></Route>
+        <Route path="/login" element={<Login />}></Route>
+        <Route path="/set-avatar" element={<SetAvatar />}></Route>
+        <Route path="/" element={<Chat />}></Route>
+      </Routes>
+    </AuthContextProvider>
   );
 }
 

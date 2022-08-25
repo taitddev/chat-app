@@ -1,0 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --toastify-color-dark: #121212;
+  }
+
+  body {
+    @apply text-white font-light bg-eerieBlack overflow-hidden;
+    font-family: "Josefin Sans", sans-serif;
+  }
+
+  input {
+    @apply outline-none;
+  }
+
+  h1 {
+    @apply text-5xl;
+  }
+
+  h2 {
+    @apply text-3xl;
+  }
+}
+
+@layer components {
+  .container {
+    @apply h-screen mx-auto flex items-center justify-center;
+  }
+
+  .btn-primary {
+    @apply bg-mediumPurple px-20 py-6 uppercase rounded-lg mx-auto font-semibold hover:bg-hanPurple transition-all;
+  }
+}
+
+.Toastify__toast {
+  font-family: "Josefin Sans", sans-serif;
+}
