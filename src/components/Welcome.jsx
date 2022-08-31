@@ -13,7 +13,7 @@ export default function Welcome() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-10">
+    <div className="w-full flex flex-col items-center justify-center gap-10">
       <img src={Robot} alt="" className="w-80" />
       <div className="text-center">
         <h1 className="mb-5">

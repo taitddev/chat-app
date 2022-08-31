@@ -4,20 +4,33 @@ import axios from "axios";
 import { io } from "socket.io-client";
 
 import { useAuth } from "../context/AuthContext";
-import { allUsersRoute, host } from "../utils/APIRoutes";
+import { useChat } from "../context/ChatContext";
 
-import Welcome from "../components/Welcome";
-import Contacts from "../components/Contacts";
+import { host } from "../utils/APIRoutes";
+
+import Contacts from "../components/contacts/Contacts";
 import ChatContainer from "../components/ChatContainer";
+import Sidebar from "../components/Sidebar";
+import ChatHeader from "../components/ChatHeader";
 
 const Chat = () => {
   const navigate = useNavigate();
   const socket = useRef();
-  const [contacts, setContacts] = useState([]);
-  const [currentChat, setCurrentChat] = useState(undefined);
+  const [conversations, setConversations] = useState([]);
   const [currentUser, setCurrentUser] = useState(undefined);
+  const [lastMessage, setLastMessage] = useState([]);
 
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
+  const { arrivalMessage, setArrivalMessage } = useChat();
+
+  // Set arrival message
+  useEffect(() => {
+    if (socket.current) {
+      socket.current.on("msg-recieve", (msg) => {
+        setArrivalMessage({ fromSelf: false, message: msg });
+      });
+    }
+  }, [socket.current]);
 
   // Redirect to login page if user is not logged in
   // Else set value to currentUser
@@ -29,6 +42,7 @@ const Chat = () => {
     }
   }, []);
 
+  // Add user to list online users
   useEffect(() => {
     if (currentUser) {
       socket.current = io(host);
@@ -36,34 +50,12 @@ const Chat = () => {
     }
   }, [currentUser]);
 
-  // Set contacts data
-  useEffect(() => {
-    const fetchData = async () => {
-      if (currentUser) {
-        const data = await axios.get(`${allUsersRoute}/${currentUser._id}`);
-        setContacts(data.data);
-      }
-    };
-    fetchData();
-  }, [currentUser]);
-
-  const handleChatChange = (chat) => {
-    setCurrentChat(chat);
-  };
-
   return (
     <>
-      <div className="container">
-        <div className="h-[85vh] w-[85vw] bg-richBlack grid grid-cols-4 rounded-2xl">
-          <Contacts contacts={contacts} changeChat={handleChatChange} />
-          <div className="col-span-3 flex justify-center">
-            {currentChat === undefined ? (
-              <Welcome />
-            ) : (
-              <ChatContainer currentChat={currentChat} socket={socket} />
-            )}
-          </div>
-        </div>
+      <div className="flex">
+        <Sidebar />
+        <Contacts />
+        <ChatContainer socket={socket} />
       </div>
     </>
   );

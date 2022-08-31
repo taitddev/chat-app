@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { BsEmojiSmileFill } from "react-icons/bs";
-import { IoMdSend } from "react-icons/io";
+import { IoPaperPlaneOutline, IoMicOutline, IoAdd } from "react-icons/io5";
 import styled from "styled-components";
 import Picker from "emoji-picker-react";
 
@@ -17,6 +17,13 @@ export default function ChatInput({ handleSendMsg }) {
     setMsg(message);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && msg.length > 0) {
+      handleSendMsg(msg);
+      setMsg("");
+    }
+  };
+
   const sendChat = (event) => {
     event.preventDefault();
     if (msg.length > 0) {
@@ -26,8 +33,33 @@ export default function ChatInput({ handleSendMsg }) {
   };
 
   return (
-    <Container>
-      <div className="button-container">
+    <>
+      <div className="bg-charlestonGreen p-4">
+        <div className="flex items-center gap-5 h-full">
+          <IoAdd fontSize={22} />
+          <input
+            type="text"
+            placeholder="Aa"
+            onChange={(e) => setMsg(e.target.value)}
+            value={msg}
+            className="rounded-md px-4 py-2 bg-darkGunmetal w-full"
+            onKeyDown={(e) => {
+              handleKeyDown(e);
+            }}
+          />
+
+          <div className="flex gap-3">
+            <IoMicOutline fontSize={24} />
+            <IoPaperPlaneOutline
+              fontSize={24}
+              onClick={(e) => {
+                sendChat(e);
+              }}
+            />
+          </div>
+        </div>
+      </div>
+      {/* <div className="button-container">
         <div className="emoji">
           <BsEmojiSmileFill onClick={handleEmojiPickerhideShow} />
           {showEmojiPicker && <Picker onEmojiClick={handleEmojiClick} />}
@@ -43,8 +75,8 @@ export default function ChatInput({ handleSendMsg }) {
         <button type="submit">
           <IoMdSend />
         </button>
-      </form>
-    </Container>
+      </form> */}
+    </>
   );
 }
 
